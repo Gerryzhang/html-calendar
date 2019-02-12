@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>日历</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .caption {
+            width: 700px;
+            text-align: center;
+            padding: 10px 0;
+
+        }
+
+        .caption p {
+            display: inline;
+        }
+
+        .caption button:first-child {
+            float: left;
+        }
+
+        .caption button:last-child {
+            float: right;
+        }
+
+        .weeks,
+        #month {
+            width: 700px;
+            user-select: none;
+
+        }
+
+        .weeks::after,
+        #month::after {
+            display: block;
+            clear: both;
+            height: 0;
+            visibility: hidden;
+            content: ''
+        }
+
+        .weeks>div,
+        #month>div {
+            margin: 0;
+            width: 100px;
+            height: 30px;
+            margin-right: -1px;
+            margin-bottom: -1px;
+            border: 1px solid;
+            float: left;
+            text-align: center;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="caption">
+        <button onclick="onPreMonth()">上一月</button>
+        <p id="ym"></p>
+        <button onclick="onNextMonth()">下一月</button>
+    </div>
+    <div class="weeks">
+        <div>星期日</div>
+        <div>星期一</div>
+        <div>星期二</div>
+        <div>星期三</div>
+        <div>星期四</div>
+        <div>星期五</div>
+        <div>星期六</div>
+    </div>
+    <div id="month"></div>
+    <script>
+
+
+        let [curY, curM] = [0, 0];
+        let dt = new Date();
+        curY = dt.getFullYear();
+        curM = dt.getMonth();
+        init()
+
+
+        function init() {
+            // console.info(curY, '年', curM + 1, '月')
+            document.getElementById('ym').innerText = `${curY}年${curM + 1}月`
+            let monthDay = new Date(curY, curM + 1, 0).getDate();//返回年月的天数（开始月份为1,1月份为1）
+            let monthFirstWeek = new Date(curY, curM, 1).getDay();//返回月份第一天是周几（开始月份为0,1月份为0）
+            // console.info(`当前月份总共${monthDay}天`, `当前月份第一天为${monthFirstWeek}`)
+
+            //生成日期元素
+            let html = ''
+            for (let i = 1; i < monthDay + 1; i++) {
+                html += `<div>${i}</div>`
+            }
+
+            //填补空日期
+            let empty = '';
+            for (let i = 0; i < monthFirstWeek; i++) {
+                empty += '<div></div>'
+            }
+            let month = document.getElementById("month");
+            month.innerHTML = empty + html
+
+        }
+
+        //上个月
+        function onPreMonth() {
+            let dt = new Date(curY, curM)
+            dt.setMonth(curM - 1);
+            curM = dt.getMonth()
+            curY = dt.getFullYear();
+            init()
+        }
+        function onNextMonth() {
+            let dt = new Date(curY, curM)
+            dt.setMonth(curM + 1);
+            curM = dt.getMonth()
+            curY = dt.getFullYear();
+            init()
+        }
+
+    </script>
+</body>
+
+</html>
